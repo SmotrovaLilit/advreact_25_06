@@ -1,34 +1,35 @@
 import React, { Component } from 'react'
 import {View, TextInput, Text, Button, Platform} from 'react-native'
+import {observer, inject} from 'mobx-react'
 
-
+@inject('navigation', 'auth')
+@observer
 class SignIn extends Component {
     static propTypes = {
 
     };
 
-    state = {
-        email: '',
-        password: ''
-    }
-
     render() {
+        const { email, password, isValidEmail } = this.props.auth
         return (
             <View>
                 <Text>
                     Email:
                 </Text>
                 <TextInput
-                    value = {this.state.email}
+                    value = {email}
                     onChangeText = {this.handleEmailChange}
                     keyboardType = 'email-address'
                     style = {styles.input}
                 />
                 <Text>
+                    {isValidEmail ? '' : 'Not a valid email'}
+                </Text>
+                <Text>
                     Password:
                 </Text>
                 <TextInput
-                    value = {this.state.password}
+                    value = {password}
                     onChangeText = {this.handlePasswordChange}
                     style = {styles.input}
                     secureTextEntry
@@ -41,10 +42,12 @@ class SignIn extends Component {
         )
     }
 
-    handleSubmit = () => console.log(this.state)
+    handleSubmit = () => {
+        this.props.navigation.goTo('eventList')
+    }
 
-    handleEmailChange = (email) => this.setState({ email })
-    handlePasswordChange = (password) => this.setState({ password })
+    handleEmailChange = (email) => this.props.auth.setEmail(email)
+    handlePasswordChange = (password) => this.props.auth.setPassword(password)
 }
 
 const styles = {

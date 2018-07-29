@@ -1,34 +1,21 @@
-import React from 'react';
-import { StyleSheet, View, Image } from 'react-native';
-import HelloWorld from './src/components/hello-world'
-import SignIn from './src/components/sign-in'
-import Event from './src/components/event'
-import EventList from './src/components/event-list'
-import data from './src/fixtures'
+import React from 'react'
+import {configure} from 'mobx'
+import {Provider} from 'mobx-react'
+import AppNavigator from './src/components/app-navigator'
+import stores from './src/stores'
 
-const events = Object.entries(data.events).map(([uid, event]) => ({...event, uid}))
+configure({
+  enforceActions: true
+})
 
 export default class App extends React.Component {
   render() {
     return (
-      <View style={styles.container}>
-          <Image style = {styles.image}
-                 source = {require('./assets/logo.png')}
-                 resizeMode = {Image.resizeMode.contain}/>
-          <Event event = {events[0]}/>
-      </View>
-    );
+        <Provider {...stores}>
+           <AppNavigator ref = {this.setNavRef}/>
+        </Provider>
+    )
   }
-}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  image: {
-    width: '100%'
-  }
-});
+    setNavRef = stores.navigation.setNavRef
+}
